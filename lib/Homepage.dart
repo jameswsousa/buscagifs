@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:buscador_de_gifs/animation.dart';
 import 'package:buscador_de_gifs/gifPage.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String _search;
   int _offset = 0;
+  Color cor;
+  var rng;
+  int number;
 
   Future<Map> _searchGifs() async {
     http.Response response;
@@ -40,14 +45,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-        debugPaintSizeEnabled = false;
+    debugPaintSizeEnabled = false;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+            Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) {
               return HomePage();
             }));
           },
@@ -125,11 +131,33 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
       itemCount: _getCount(snapshot.data["data"]),
       itemBuilder: (context, index) {
-        if (_search == null || index < snapshot.data["data"].length)
+        if (_search == null || index < snapshot.data["data"].length) {
+          rng = new Random();
+          for (var i = 0; i < 10; i++) {
+            number = rng.nextInt(5);
+          }
+          switch (number) {
+            case 0:
+              cor = Color(0xff2AFC9C);
+              break;
+            case 1:
+              cor = Color(0xffFFF39F);
+              break;
+            case 2:
+              cor = Color(0xffFB6769);
+              break;
+            case 3:
+              cor = Color(0xff9740FA);
+              break;
+            case 4:
+              cor = Color(0xff22CDFB);
+              break;
+            default:
+          }
           return GestureDetector(
             child: Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white),
+                  border: Border.all(color: cor),
                   borderRadius: BorderRadius.circular(5)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
@@ -154,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                   ["url"]);
             },
           );
-        else
+        } else
           return Container(
             child: GestureDetector(
               child: Column(
