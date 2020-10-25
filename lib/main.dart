@@ -2,13 +2,9 @@ import 'package:buscador_de_gifs/Homepage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(primaryColor: Colors.white),
-home: HomePage(),
-
+    home: HomePage(),
   ));
-  
 }
-
-

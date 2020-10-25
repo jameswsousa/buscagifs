@@ -1,6 +1,7 @@
 import 'package:buscador_de_gifs/animation.dart';
 import 'package:buscador_de_gifs/gifPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -39,11 +40,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+        debugPaintSizeEnabled = false;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Image.network(
-            "https://developers.giphy.com/static/img/dev-logo-lg.7404c00322a8.gif"),
+        title: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+              return HomePage();
+            }));
+          },
+          child: Image.network(
+              "https://developers.giphy.com/static/img/dev-logo-lg.7404c00322a8.gif"),
+        ),
         centerTitle: true,
       ),
       backgroundColor: Colors.black,
