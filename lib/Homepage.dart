@@ -1,3 +1,4 @@
+import 'package:buscador_de_gifs/animation.dart';
 import 'package:buscador_de_gifs/gifPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
     if (_search == null)
       response = await http.get(
-          "https://api.giphy.com/v1/gifs/trending?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&limit=20&rating=R");
+          "https://api.giphy.com/v1/gifs/trending?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&limit=25&rating=R");
     else
       response = await http.get(
           "https://api.giphy.com/v1/gifs/search?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&q=$_search&limit=25&offset=$_offset&rating=R&lang=en");
@@ -83,10 +84,7 @@ class _HomePageState extends State<HomePage> {
                       width: 200,
                       height: 200,
                       alignment: Alignment.center,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        strokeWidth: 5.0,
-                      ),
+                      child: CustomLoadingWidget(),
                     );
                   default:
                     if (snapshot.hasError)
@@ -119,12 +117,20 @@ class _HomePageState extends State<HomePage> {
       itemBuilder: (context, index) {
         if (_search == null || index < snapshot.data["data"].length)
           return GestureDetector(
-            child: FadeInImage.memoryNetwork(
-              placeholder: kTransparentImage,
-              height: 300,
-              fit: BoxFit.cover,
-              image: snapshot.data["data"][index]["images"]["fixed_height"]
-                  ["url"],
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(5)),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  height: 300,
+                  fit: BoxFit.cover,
+                  image: snapshot.data["data"][index]["images"]["fixed_height"]
+                      ["url"],
+                ),
+              ),
             ),
             onTap: () {
               Navigator.push(
