@@ -161,12 +161,21 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(5)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
-                child: FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  height: 300,
-                  fit: BoxFit.cover,
-                  image: snapshot.data["data"][index]["images"]["fixed_height"]
-                      ["url"],
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomLoadingWidget(),
+                    ),
+                    FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      height: 300,
+                      fit: BoxFit.cover,
+                      image: snapshot.data["data"][index]["images"]
+                          ["fixed_height"]["url"],
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -5,7 +5,7 @@ class CustomLoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 200  ,
+      width: 200,
       height: 200,
       child: FlareActor(
         'assets/loading.flr',
