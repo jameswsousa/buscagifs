@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,21 +17,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String _search;
+  String? _search;
   int _offset = 0;
-  Color cor;
-  var rng;
-  int number;
+  Color cor = Colors.white;
+  late Random rng;
+  int number = 0;
 
   Future<Map> _searchGifs() async {
     http.Response response;
 
     if (_search == null)
-      response = await http.get(
-          "https://api.giphy.com/v1/gifs/trending?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&limit=25&rating=R");
+      response = await http.get(Uri.parse(
+          "https://api.giphy.com/v1/gifs/trending?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&limit=25&rating=R"));
     else
-      response = await http.get(
-          "https://api.giphy.com/v1/gifs/search?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&q=$_search&limit=25&offset=$_offset&rating=R&lang=en");
+      response = await http.get(Uri.parse(
+          "https://api.giphy.com/v1/gifs/search?api_key=QYZSvVlKQ1TieHfPLb8eKtQlbryHE1rL&q=$_search&limit=25&offset=$_offset&rating=R&lang=en"));
     return json.decode(response.body);
   }
 
@@ -58,7 +58,13 @@ class _HomePageState extends State<HomePage> {
             }));
           },
           child: Image.network(
-              "https://developers.giphy.com/static/img/dev-logo-lg.7404c00322a8.gif"),
+            "https://giphy.com/static/img/be-animated.gif",
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Text(
+              "Busca GIFs",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ),
         centerTitle: true,
       ),
@@ -89,8 +95,16 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+          Container(
+            color: Colors.cyanAccent,
+            height: 20,
+            width: 30,
+            child: Column(
+              children: [],
+            ),
+          ),
           Expanded(
-            child: FutureBuilder(
+            child: FutureBuilder<Map>(
               future: _searchGifs(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -124,14 +138,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _gifTable(BuildContext context, AsyncSnapshot snapshot) {
+  Widget _gifTable(BuildContext context, AsyncSnapshot<Map> snapshot) {
     return GridView.builder(
       padding: EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
-      itemCount: _getCount(snapshot.data["data"]),
+      itemCount: _getCount(snapshot.data!["data"]),
       itemBuilder: (context, index) {
-        if (_search == null || index < snapshot.data["data"].length) {
+        if (_search == null || index < snapshot.data!["data"].length) {
           rng = new Random();
           for (var i = 0; i < 10; i++) {
             number = rng.nextInt(5);
@@ -172,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                       placeholder: kTransparentImage,
                       height: 300,
                       fit: BoxFit.cover,
-                      image: snapshot.data["data"][index]["images"]
+                      image: snapshot.data!["data"][index]["images"]
                           ["fixed_height"]["url"],
                     ),
                   ],
@@ -184,11 +198,12 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          GifPage(snapshot.data["data"][index])));
+                          GifPage(snapshot.data!["data"][index])));
             },
             onLongPress: () {
-              Share.share(snapshot.data["data"][index]["images"]["fixed_height"]
-                  ["url"]);
+              SharePlus.instance.share(ShareParams(
+                  text: snapshot.data!["data"][index]["images"]["fixed_height"]
+                      ["url"]));
             },
           );
         } else
