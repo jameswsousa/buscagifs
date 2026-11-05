@@ -95,14 +95,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          Container(
-            color: Colors.cyanAccent,
-            height: 20,
-            width: 30,
-            child: Column(
-              children: [],
-            ),
-          ),
           Expanded(
             child: FutureBuilder<Map>(
               future: _searchGifs(),
